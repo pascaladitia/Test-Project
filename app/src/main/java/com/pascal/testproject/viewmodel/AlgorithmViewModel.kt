@@ -84,12 +84,10 @@ class AlgorithmViewModel : ViewModel() {
             .filter { it.value.size > 1 }
             .keys
 
-        val positif = duplicates.filter { it > 0 }
-
         _output.value =
-            if (positif.isEmpty())
+            if (duplicates.isEmpty())
                 "Tidak ada angka ganda"
             else
-                "Angka ganda: ${positif.joinToString(", ")}"
+                "Angka ganda: ${duplicates.joinToString(", ")}"
     }
 }
