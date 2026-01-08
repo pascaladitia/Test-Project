@@ -1,30 +1,27 @@
 package com.pascal.testproject.ui.screen.laporan
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pascal.testproject.utils.PdfGenerator
 import com.pascal.testproject.viewmodel.AkademikViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,66 +45,163 @@ fun LaporanScreen(vm: AkademikViewModel) {
     val startPickerState = rememberDatePickerState()
     val endPickerState = rememberDatePickerState()
 
-    Column(Modifier.padding(16.dp)) {
-
-        Text("LAPORAN", fontWeight = FontWeight.Bold)
-
-        Spacer(Modifier.height(12.dp))
-
-        Button(onClick = { showStartPicker = true }) {
-            Text(startDate?.let { "Mulai: ${formatDate(it)}" } ?: "Pilih Tanggal Mulai")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(onClick = { showEndPicker = true }) {
-            Text(endDate?.let { "Sampai: ${formatDate(it)}" } ?: "Pilih Tanggal Akhir")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            enabled = startDate != null && endDate != null,
-            onClick = {
-                vm.loadRekapByTanggal(startDate!!, endDate!!)
-            }
-        ) {
-            Text("Filter")
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-
-        Text("Jumlah Siswa Lulus: $lulus")
-
-        Spacer(Modifier.height(8.dp))
-        Text("Rekap Ujian:")
-        rekap.forEach {
-            Text(
-                "${it.namaUjian} | ${it.namaMatpel} | ${
-                    formatDate(it.tanggal)
-                } | ${it.jumlahPeserta} peserta"
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Laporan Akademik",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             )
         }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
 
-        Spacer(Modifier.height(8.dp))
-        Text("Siswa Tidak Lulus:")
-        gagal.forEach {
-            Text("${it.namaSiswa} gagal di ${it.namaMatpel}")
-        }
+            item {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(
+                            "Filter Tanggal",
+                            fontWeight = FontWeight.SemiBold
+                        )
 
-        Spacer(Modifier.height(8.dp))
-        Text("Total Peserta Ujian: $totalPeserta")
+                        Spacer(Modifier.height(8.dp))
 
-        Spacer(Modifier.height(8.dp))
-        Text("Persentase Kelulusan: $persentase%")
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(
+                                onClick = { showStartPicker = true },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.CalendarMonth, null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    startDate?.let { formatDate(it) }
+                                        ?: "Tanggal Mulai"
+                                )
+                            }
 
-        Spacer(Modifier.height(24.dp))
+                            OutlinedButton(
+                                onClick = { showEndPicker = true },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.CalendarMonth, null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    endDate?.let { formatDate(it) }
+                                        ?: "Tanggal Akhir"
+                                )
+                            }
+                        }
 
-        Button(onClick = {
-            pdf.generateLaporan(rekap, lulus, gagal)
-        }) {
-            Text("Export PDF")
+                        Spacer(Modifier.height(8.dp))
+
+                        Button(
+                            enabled = startDate != null && endDate != null,
+                            onClick = {
+                                vm.loadRekapByTanggal(startDate!!, endDate!!)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Default.FilterAlt, null)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Terapkan Filter")
+                        }
+                    }
+                }
+            }
+
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    StatCard(
+                        title = "Lulus",
+                        value = lulus.toString(),
+                        icon = Icons.Default.CheckCircle,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    StatCard(
+                        title = "Tidak Lulus",
+                        value = gagal.size.toString(),
+                        icon = Icons.Default.Error,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            item {
+                StatCard(
+                    title = "Persentase Kelulusan",
+                    value = "$persentase%",
+                    icon = Icons.Default.Description,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            if (rekap.isNotEmpty()) {
+                item {
+                    Text(
+                        "Rekap Ujian",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            items(rekap.size) { i ->
+                val item = rekap[i]
+                Card(
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                    ) {
+                        Text(item.namaUjian, fontWeight = FontWeight.SemiBold)
+                        Text("Matpel: ${item.namaMatpel}")
+                        Text("Tanggal: ${formatDate(item.tanggal)}")
+                        Text("Peserta: ${item.jumlahPeserta}")
+                    }
+                }
+            }
+
+            if (gagal.isNotEmpty()) {
+                item {
+                    Text(
+                        "Siswa Tidak Lulus",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                items(gagal.size) { i ->
+                    val g = gagal[i]
+                    Text("• ${g.namaSiswa} – ${g.namaMatpel}")
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        pdf.generateLaporan(rekap, lulus, gagal)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.PictureAsPdf, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Export PDF")
+                }
+            }
         }
     }
 
@@ -140,5 +234,35 @@ fun LaporanScreen(vm: AkademikViewModel) {
     }
 }
 
+@Composable
+private fun StatCard(
+    title: String,
+    value: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        elevation = CardDefaults.cardElevation(3.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(icon, contentDescription = null)
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(title, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    value,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+        }
+    }
+}
+
 fun formatDate(millis: Long): String =
-    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(millis))
+    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(millis))

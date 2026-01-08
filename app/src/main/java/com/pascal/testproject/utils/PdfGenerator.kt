@@ -5,8 +5,8 @@ import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Paragraph
-import com.pascal.testproject.model.SiswaGagal
-import com.pascal.testproject.model.UjianRekap
+import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.UjianRekap
 import java.io.File
 
 class PdfGenerator(private val context: Context) {

@@ -5,13 +5,13 @@ import androidx.room.Room
 
 object DatabaseProvider {
 
-    private var INSTANCE: AkademikDatabase? = null
+    private var INSTANCE: AppDatabase? = null
 
-    fun getDatabase(context: Context): AkademikDatabase {
+    fun getDatabase(context: Context): AppDatabase {
         return INSTANCE ?: synchronized(this) {
             val instance = Room.databaseBuilder(
                 context.applicationContext,
-                AkademikDatabase::class.java,
+                AppDatabase::class.java,
                 "akademik_db"
             ).build()
             INSTANCE = instance

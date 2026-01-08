@@ -1,4 +1,4 @@
-package com.pascal.testproject.model
+package com.pascal.testproject.domain.model
 
 data class UjianRekap(
     val namaUjian: String,

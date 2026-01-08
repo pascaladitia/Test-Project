@@ -10,14 +10,13 @@ import com.pascal.testproject.data.entity.MataPelajaranEntity
 import com.pascal.testproject.data.entity.PesertaEntity
 import com.pascal.testproject.data.entity.SiswaEntity
 import com.pascal.testproject.data.entity.UjianEntity
-import com.pascal.testproject.model.SiswaGagal
-import com.pascal.testproject.model.UjianRekap
+import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.UjianRekap
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AkademikDao {
 
-    // ================= SISWA =================
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSiswa(siswa: SiswaEntity)
 
@@ -30,7 +29,6 @@ interface AkademikDao {
     @Query("SELECT * FROM siswa")
     fun getAllSiswa(): Flow<List<SiswaEntity>>
 
-    // ================= MATPEL =================
     @Insert
     suspend fun insertMatpel(matpel: MataPelajaranEntity)
 
@@ -43,7 +41,6 @@ interface AkademikDao {
     @Query("SELECT * FROM mata_pelajaran")
     fun getAllMatpel(): Flow<List<MataPelajaranEntity>>
 
-    // ================= UJIAN =================
     @Insert
     suspend fun insertUjian(ujian: UjianEntity)
 
@@ -56,14 +53,12 @@ interface AkademikDao {
     @Query("SELECT * FROM ujian ORDER BY tanggal")
     fun getAllUjian(): Flow<List<UjianEntity>>
 
-    // a. Ujian berdasarkan tanggal
     @Query("""
         SELECT * FROM ujian
         WHERE tanggal BETWEEN :start AND :end
     """)
     fun getUjianByTanggal(start: Long, end: Long): Flow<List<UjianEntity>>
 
-    // ================= PESERTA =================
     @Insert
     suspend fun insertPeserta(peserta: PesertaEntity)
 
@@ -76,7 +71,6 @@ interface AkademikDao {
     @Query("SELECT * FROM peserta")
     fun getAllPeserta(): Flow<List<PesertaEntity>>
 
-    // b. Rekap ujian
     @Query("""
         SELECT ujian.namaUjian,
                mata_pelajaran.namaMatpel,
@@ -89,7 +83,6 @@ interface AkademikDao {
     """)
     fun getRekapUjian(): Flow<List<UjianRekap>>
 
-    // c. Jumlah siswa lulus
     @Query("""
         SELECT COUNT(DISTINCT nis)
         FROM peserta
@@ -97,7 +90,6 @@ interface AkademikDao {
     """)
     fun getJumlahLulus(): Flow<Int>
 
-    // d. Siswa tidak lulus + matpel
     @Query("""
         SELECT siswa.nama AS namaSiswa,
                mata_pelajaran.namaMatpel

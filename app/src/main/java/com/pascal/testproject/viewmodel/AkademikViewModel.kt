@@ -1,40 +1,40 @@
 package com.pascal.testproject.viewmodel
 
-import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.pascal.testproject.data.dao.AkademikDao
-import com.pascal.testproject.data.entity.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import com.pascal.testproject.model.UjianRekap
+import android.widget.Toast
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.pascal.testproject.data.entity.MataPelajaranEntity
+import com.pascal.testproject.data.entity.PesertaEntity
+import com.pascal.testproject.data.entity.SiswaEntity
+import com.pascal.testproject.data.entity.UjianEntity
+import com.pascal.testproject.domain.model.UjianRekap
+import com.pascal.testproject.domain.usecase.AkademikUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class AkademikViewModel(
-    application: Application,
-    private val dao: AkademikDao
-) : AndroidViewModel(application) {
+    private val context: Context,
+    private val useCase: AkademikUseCase
+) : ViewModel() {
 
-    private val context = application.applicationContext
+    val siswa = useCase.getAllSiswa()
+    val matpel = useCase.getAllMatpel()
+    val ujian = useCase.getAllUjian()
+    val peserta = useCase.getAllPeserta()
 
-    val siswa = dao.getAllSiswa()
-    val matpel = dao.getAllMatpel()
-    val ujian = dao.getAllUjian()
-    val peserta = dao.getAllPeserta()
-
-    val rekap = dao.getRekapUjian()
-    val jumlahLulus = dao.getJumlahLulus()
-    val gagal = dao.getSiswaGagal()
+    val rekap = useCase.getRekapUjian()
+    val jumlahLulus = useCase.getJumlahLulus()
+    val gagal = useCase.getSiswaGagal()
 
     val rekapByTanggal = MutableStateFlow<List<UjianRekap>>(emptyList())
 
-    // ===== TAMBAH =====
     fun tambahSiswa(nis: String, nama: String, alamat: String) =
         viewModelScope.launch {
             try {
-                dao.insertSiswa(SiswaEntity(nis, nama, alamat))
+                useCase.insertSiswa(SiswaEntity(nis, nama, alamat))
             } catch (e: Exception) {
                 toast("Gagal menambah siswa")
             }
@@ -43,7 +43,7 @@ class AkademikViewModel(
     fun tambahMatpel(nama: String) =
         viewModelScope.launch {
             try {
-                dao.insertMatpel(MataPelajaranEntity(namaMatpel = nama))
+                useCase.insertMatpel(MataPelajaranEntity(namaMatpel = nama))
             } catch (e: Exception) {
                 toast("Gagal menambah mata pelajaran")
             }
@@ -52,7 +52,7 @@ class AkademikViewModel(
     fun tambahUjian(nama: String, idMatpel: Int, tanggal: Long) =
         viewModelScope.launch {
             try {
-                dao.insertUjian(
+                useCase.insertUjian(
                     UjianEntity(
                         namaUjian = nama,
                         idMatpel = idMatpel,
@@ -67,7 +67,7 @@ class AkademikViewModel(
     fun tambahPeserta(nis: String, idUjian: Int, nilai: Int) =
         viewModelScope.launch {
             try {
-                dao.insertPeserta(
+                useCase.insertPeserta(
                     PesertaEntity(
                         nis = nis,
                         idUjian = idUjian,
@@ -79,11 +79,10 @@ class AkademikViewModel(
             }
         }
 
-    // ===== UPDATE =====
     fun updateSiswa(siswa: SiswaEntity) =
         viewModelScope.launch {
             try {
-                dao.updateSiswa(siswa)
+                useCase.updateSiswa(siswa)
             } catch (e: Exception) {
                 toast("Gagal update siswa")
             }
@@ -92,7 +91,7 @@ class AkademikViewModel(
     fun updateMatpel(matpel: MataPelajaranEntity) =
         viewModelScope.launch {
             try {
-                dao.updateMatpel(matpel)
+                useCase.updateMatpel(matpel)
             } catch (e: Exception) {
                 toast("Gagal update matpel")
             }
@@ -101,7 +100,7 @@ class AkademikViewModel(
     fun updateUjian(ujian: UjianEntity) =
         viewModelScope.launch {
             try {
-                dao.updateUjian(ujian)
+                useCase.updateUjian(ujian)
             } catch (e: Exception) {
                 toast("Gagal update ujian")
             }
@@ -110,17 +109,16 @@ class AkademikViewModel(
     fun updatePeserta(peserta: PesertaEntity) =
         viewModelScope.launch {
             try {
-                dao.updatePeserta(peserta)
+                useCase.updatePeserta(peserta)
             } catch (e: Exception) {
                 toast("Gagal update peserta")
             }
         }
 
-    // ===== DELETE =====
     fun deleteSiswa(siswa: SiswaEntity) =
         viewModelScope.launch {
             try {
-                dao.deleteSiswa(siswa)
+                useCase.deleteSiswa(siswa)
             } catch (e: Exception) {
                 toast("Gagal hapus siswa")
             }
@@ -129,7 +127,7 @@ class AkademikViewModel(
     fun deleteMatpel(matpel: MataPelajaranEntity) =
         viewModelScope.launch {
             try {
-                dao.deleteMatpel(matpel)
+                useCase.deleteMatpel(matpel)
             } catch (e: Exception) {
                 toast("Gagal hapus matpel")
             }
@@ -138,7 +136,7 @@ class AkademikViewModel(
     fun deleteUjian(ujian: UjianEntity) =
         viewModelScope.launch {
             try {
-                dao.deleteUjian(ujian)
+                useCase.deleteUjian(ujian)
             } catch (e: Exception) {
                 toast("Gagal hapus ujian")
             }
@@ -147,18 +145,18 @@ class AkademikViewModel(
     fun deletePeserta(peserta: PesertaEntity) =
         viewModelScope.launch {
             try {
-                dao.deletePeserta(peserta)
+                useCase.deletePeserta(peserta)
             } catch (e: Exception) {
                 toast("Gagal hapus peserta")
             }
         }
 
     fun ujianByTanggal(start: Long, end: Long): Flow<List<UjianEntity>> =
-        dao.getUjianByTanggal(start, end)
+        useCase.getUjianByTanggal(start, end)
 
     fun loadRekapByTanggal(start: Long, end: Long) {
         viewModelScope.launch {
-            dao.getRekapUjianByTanggal(start, end).collect {
+            useCase.getRekapUjianByTanggal(start, end).collect {
                 rekapByTanggal.value = it
             }
         }

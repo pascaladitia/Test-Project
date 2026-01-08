@@ -17,6 +17,6 @@ import com.pascal.testproject.data.entity.UjianEntity
     ],
     version = 1
 )
-abstract class AkademikDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun dao(): AkademikDao
 }
