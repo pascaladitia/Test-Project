@@ -20,6 +20,10 @@ class AlgorithmViewModel : ViewModel() {
     }
 
     fun runReverse(text: String) {
+        if (text.isBlank()) {
+            _output.value = "Error: Input tidak boleh kosong"
+            return
+        }
         _output.value = "Hasil: ${reverseRecursive(text)}"
     }
 
@@ -31,33 +35,71 @@ class AlgorithmViewModel : ViewModel() {
         return true
     }
 
-    fun runPrime(n: Int) {
-        val primes = (2 until n).filter { isPrime(it) }
-        _output.value =
-            "Deret: ${primes.joinToString(", ")}\nJumlah: ${primes.sum()}"
+    fun runPrime(input: String) {
+        try {
+            val n = input.toInt()
+            if (n < 2) {
+                _output.value = "Error: Input harus >= 2"
+                return
+            }
+
+            val primes = (2 until n).filter { isPrime(it) }
+            _output.value =
+                "Deret: ${primes.joinToString(", ")}\nJumlah: ${primes.sum()}"
+        } catch (e: Exception) {
+            _output.value = "Error: Input harus berupa angka"
+        }
     }
 
     @SuppressLint("NewApi")
-    fun runAge(date: String) {
-        val formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
-        val birth = LocalDate.parse(date, formatter)
-        val now = LocalDate.now()
-        val period = Period.between(birth, now)
+    fun runAge(input: String) {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
+            val birth = LocalDate.parse(input, formatter)
+            val now = LocalDate.now()
 
-        val leapYears = (birth.year..now.year).count {
-            isLeap(it.toLong())
+            if (birth.isAfter(now)) {
+                _output.value = "Error: Tanggal lahir tidak valid"
+                return
+            }
+
+            val period = Period.between(birth, now)
+
+            val leapYears = (birth.year..now.year).count {
+                isLeap(it.toLong())
+            }
+
+            _output.value =
+                "${period.years} tahun, ${period.months} bulan, ${period.days} hari\n" +
+                        "$leapYears tahun kabisat"
+        } catch (e: Exception) {
+            _output.value = "Error: Format tanggal harus MM-DD-YYYY"
         }
-
-        _output.value =
-            "${period.years} tahun, ${period.months} bulan, ${period.days} hari\n" +
-                    "$leapYears tahun kabisat"
     }
 
-    fun runDuplicate(list: String) {
-        val nums = list.split(",").map { it.trim().toInt() }
-        val duplicates = nums.groupBy { it }
-            .filter { it.value.size > 1 }
-            .keys
-        _output.value = "Angka ganda: ${duplicates.joinToString(", ")}"
+    fun runDuplicate(input: String) {
+        try {
+            val nums = input.split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .map { it.toInt() }
+
+            if (nums.isEmpty()) {
+                _output.value = "Error: List tidak boleh kosong"
+                return
+            }
+
+            val duplicates = nums.groupBy { it }
+                .filter { it.value.size > 1 }
+                .keys
+
+            _output.value =
+                if (duplicates.isEmpty())
+                    "Tidak ada angka ganda"
+                else
+                    "Angka ganda: ${duplicates.joinToString(", ")}"
+        } catch (e: Exception) {
+            _output.value = "Error: Input harus angka dipisahkan koma (contoh: 1,2,3)"
+        }
     }
 }

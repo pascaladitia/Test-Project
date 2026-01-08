@@ -73,7 +73,7 @@ fun AlgorithmScreen(
         Spacer(Modifier.height(8.dp))
 
         Button(
-            onClick = { vm.runPrime(input.toInt()) },
+            onClick = { vm.runPrime(input) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(Icons.Default.Calculate, null)
