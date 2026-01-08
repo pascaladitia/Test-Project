@@ -9,6 +9,8 @@ import com.pascal.testproject.data.entity.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import android.database.sqlite.SQLiteConstraintException
+import com.pascal.testproject.model.UjianRekap
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class AkademikViewModel(
     application: Application,
@@ -25,6 +27,8 @@ class AkademikViewModel(
     val rekap = dao.getRekapUjian()
     val jumlahLulus = dao.getJumlahLulus()
     val gagal = dao.getSiswaGagal()
+
+    val rekapByTanggal = MutableStateFlow<List<UjianRekap>>(emptyList())
 
     // ===== TAMBAH =====
     fun tambahSiswa(nis: String, nama: String, alamat: String) =
@@ -151,6 +155,14 @@ class AkademikViewModel(
 
     fun ujianByTanggal(start: Long, end: Long): Flow<List<UjianEntity>> =
         dao.getUjianByTanggal(start, end)
+
+    fun loadRekapByTanggal(start: Long, end: Long) {
+        viewModelScope.launch {
+            dao.getRekapUjianByTanggal(start, end).collect {
+                rekapByTanggal.value = it
+            }
+        }
+    }
 
     private fun toast(msg: String) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

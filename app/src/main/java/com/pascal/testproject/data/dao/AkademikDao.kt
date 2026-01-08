@@ -108,4 +108,17 @@ interface AkademikDao {
         WHERE peserta.nilai < 75
     """)
     fun getSiswaGagal(): Flow<List<SiswaGagal>>
+
+    @Query("""
+    SELECT ujian.namaUjian,
+           mata_pelajaran.namaMatpel,
+           ujian.tanggal,
+           COUNT(peserta.id) AS jumlahPeserta
+    FROM ujian
+    JOIN mata_pelajaran ON ujian.idMatpel = mata_pelajaran.idMatpel
+    LEFT JOIN peserta ON ujian.idUjian = peserta.idUjian
+    WHERE ujian.tanggal BETWEEN :start AND :end
+    GROUP BY ujian.idUjian
+""")
+    fun getRekapUjianByTanggal(start: Long, end: Long): Flow<List<UjianRekap>>
 }
