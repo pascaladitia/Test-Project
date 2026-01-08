@@ -1,0 +1,176 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "a141c7f91d7b44636bec83c3e58b9e70",
+    "entities": [
+      {
+        "tableName": "siswa",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nis` TEXT NOT NULL, `nama` TEXT NOT NULL, `alamat` TEXT NOT NULL, PRIMARY KEY(`nis`))",
+        "fields": [
+          {
+            "fieldPath": "nis",
+            "columnName": "nis",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nama",
+            "columnName": "nama",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alamat",
+            "columnName": "alamat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "nis"
+          ]
+        }
+      },
+      {
+        "tableName": "mata_pelajaran",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idMatpel` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `namaMatpel` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "idMatpel",
+            "columnName": "idMatpel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "namaMatpel",
+            "columnName": "namaMatpel",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idMatpel"
+          ]
+        }
+      },
+      {
+        "tableName": "ujian",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idUjian` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `namaUjian` TEXT NOT NULL, `idMatpel` INTEGER NOT NULL, `tanggal` INTEGER NOT NULL, FOREIGN KEY(`idMatpel`) REFERENCES `mata_pelajaran`(`idMatpel`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idUjian",
+            "columnName": "idUjian",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "namaUjian",
+            "columnName": "namaUjian",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idMatpel",
+            "columnName": "idMatpel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tanggal",
+            "columnName": "tanggal",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "idUjian"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "mata_pelajaran",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idMatpel"
+            ],
+            "referencedColumns": [
+              "idMatpel"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "peserta",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nis` TEXT NOT NULL, `idUjian` INTEGER NOT NULL, `nilai` INTEGER NOT NULL, FOREIGN KEY(`nis`) REFERENCES `siswa`(`nis`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`idUjian`) REFERENCES `ujian`(`idUjian`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nis",
+            "columnName": "nis",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idUjian",
+            "columnName": "idUjian",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nilai",
+            "columnName": "nilai",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "siswa",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "nis"
+            ],
+            "referencedColumns": [
+              "nis"
+            ]
+          },
+          {
+            "table": "ujian",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idUjian"
+            ],
+            "referencedColumns": [
+              "idUjian"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a141c7f91d7b44636bec83c3e58b9e70')"
+    ]
+  }
+}
