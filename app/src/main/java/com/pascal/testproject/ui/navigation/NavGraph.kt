@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pascal.testproject.ui.screen.algorithm.AlgorithmScreen
 import com.pascal.testproject.ui.screen.home.HomeScreen
 import com.pascal.testproject.ui.screen.laporan.LaporanScreen
 import com.pascal.testproject.ui.screen.matpel.MatpelScreen
@@ -25,5 +26,6 @@ fun NavGraph() {
         composable(Routes.UJIAN) { UjianScreen(vm) }
         composable(Routes.PESERTA) { PesertaScreen(vm) }
         composable(Routes.LAPORAN) { LaporanScreen(vm) }
+        composable(Routes.ALGORITMA) { AlgorithmScreen() }
     }
 }

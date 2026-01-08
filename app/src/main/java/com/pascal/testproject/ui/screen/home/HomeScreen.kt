@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Person
@@ -71,6 +72,11 @@ fun HomeScreen(nav: NavController) {
             title = "Laporan",
             icon = Icons.Default.PictureAsPdf,
             onClick = { nav.navigate(Routes.LAPORAN) }
+        )
+        DashboardButton(
+            title = "Algoritma",
+            icon = Icons.Default.Code,
+            onClick = { nav.navigate(Routes.ALGORITMA) }
         )
     }
 }

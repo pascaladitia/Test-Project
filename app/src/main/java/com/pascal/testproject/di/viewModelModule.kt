@@ -1,6 +1,7 @@
 package com.pascal.testproject.di
 
 import com.pascal.testproject.viewmodel.AkademikViewModel
+import com.pascal.testproject.viewmodel.AlgorithmViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -11,5 +12,9 @@ val viewModelModule = module {
             context = androidContext(),
             useCase = get()
         )
+    }
+
+    viewModel {
+        AlgorithmViewModel()
     }
 }

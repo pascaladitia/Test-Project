@@ -7,4 +7,5 @@ object Routes {
     const val UJIAN = "ujian"
     const val PESERTA = "peserta"
     const val LAPORAN = "laporan"
+    const val ALGORITMA = "algoritma"
 }
