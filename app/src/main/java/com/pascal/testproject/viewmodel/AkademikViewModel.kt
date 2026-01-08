@@ -27,6 +27,7 @@ class AkademikViewModel(
 
     val rekap = useCase.getRekapUjian()
     val jumlahLulus = useCase.getJumlahLulus()
+    val lulus = useCase.getSiswaLulus()
     val gagal = useCase.getSiswaGagal()
 
     val rekapByTanggal = MutableStateFlow<List<UjianRekap>>(emptyList())

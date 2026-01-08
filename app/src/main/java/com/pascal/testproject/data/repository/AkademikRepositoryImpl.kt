@@ -3,6 +3,7 @@ package com.pascal.testproject.data.repository
 import com.pascal.testproject.data.dao.AkademikDao
 import com.pascal.testproject.data.entity.*
 import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.SiswaLulus
 import com.pascal.testproject.domain.model.UjianRekap
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
@@ -19,6 +20,7 @@ class AkademikRepositoryImpl(
 
     override fun getRekapUjian(): Flow<List<UjianRekap>> = dao.getRekapUjian()
     override fun getJumlahLulus(): Flow<Int> = dao.getJumlahLulus()
+    override fun getSiswaLulus(): Flow<List<SiswaLulus>> = dao.getSiswaLulus()
     override fun getSiswaGagal(): Flow<List<SiswaGagal>> = dao.getSiswaGagal()
 
     override fun getUjianByTanggal(start: Long, end: Long): Flow<List<UjianEntity>> =

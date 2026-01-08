@@ -6,8 +6,3 @@ data class UjianRekap(
     val tanggal: Long,
     val jumlahPeserta: Int
 )
-
-data class SiswaGagal(
-    val namaSiswa: String,
-    val namaMatpel: String
-)

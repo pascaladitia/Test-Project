@@ -1,8 +1,12 @@
 package com.pascal.testproject.domain.usecase
 
-import com.pascal.testproject.data.entity.*
-import com.pascal.testproject.domain.model.UjianRekap
+import com.pascal.testproject.data.entity.MataPelajaranEntity
+import com.pascal.testproject.data.entity.PesertaEntity
+import com.pascal.testproject.data.entity.SiswaEntity
+import com.pascal.testproject.data.entity.UjianEntity
 import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.SiswaLulus
+import com.pascal.testproject.domain.model.UjianRekap
 import kotlinx.coroutines.flow.Flow
 
 interface AkademikUseCase {
@@ -14,6 +18,7 @@ interface AkademikUseCase {
 
     fun getRekapUjian(): Flow<List<UjianRekap>>
     fun getJumlahLulus(): Flow<Int>
+    fun getSiswaLulus(): Flow<List<SiswaLulus>>
     fun getSiswaGagal(): Flow<List<SiswaGagal>>
 
     fun getUjianByTanggal(start: Long, end: Long): Flow<List<UjianEntity>>

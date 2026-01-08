@@ -11,6 +11,7 @@ import com.pascal.testproject.data.entity.PesertaEntity
 import com.pascal.testproject.data.entity.SiswaEntity
 import com.pascal.testproject.data.entity.UjianEntity
 import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.SiswaLulus
 import com.pascal.testproject.domain.model.UjianRekap
 import kotlinx.coroutines.flow.Flow
 
@@ -92,13 +93,27 @@ interface AkademikDao {
 
     @Query("""
         SELECT siswa.nama AS namaSiswa,
-               mata_pelajaran.namaMatpel
+               mata_pelajaran.namaMatpel,
+               peserta.nilai AS nilai
         FROM peserta
         JOIN siswa ON peserta.nis = siswa.nis
         JOIN ujian ON peserta.idUjian = ujian.idUjian
         JOIN mata_pelajaran ON ujian.idMatpel = mata_pelajaran.idMatpel
-        WHERE peserta.nilai < 75
+        WHERE peserta.nilai >= 75
     """)
+    fun getSiswaLulus(): Flow<List<SiswaLulus>>
+
+
+    @Query("""
+    SELECT siswa.nama AS namaSiswa,
+           mata_pelajaran.namaMatpel,
+           peserta.nilai AS nilai
+    FROM peserta
+    JOIN siswa ON peserta.nis = siswa.nis
+    JOIN ujian ON peserta.idUjian = ujian.idUjian
+    JOIN mata_pelajaran ON ujian.idMatpel = mata_pelajaran.idMatpel
+    WHERE peserta.nilai < 75
+""")
     fun getSiswaGagal(): Flow<List<SiswaGagal>>
 
     @Query("""

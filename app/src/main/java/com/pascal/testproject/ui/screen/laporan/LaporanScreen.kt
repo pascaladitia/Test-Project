@@ -30,11 +30,12 @@ fun LaporanScreen(vm: AkademikViewModel) {
     val pdf = remember { PdfGenerator(context) }
 
     val rekap by vm.rekapByTanggal.collectAsState(emptyList())
-    val lulus by vm.jumlahLulus.collectAsState(0)
+    val jumlahLulus by vm.jumlahLulus.collectAsState(0)
+    val lulus by vm.lulus.collectAsState(emptyList())
     val gagal by vm.gagal.collectAsState(emptyList())
 
     val totalPeserta = rekap.sumOf { it.jumlahPeserta }
-    val persentase = if (totalPeserta == 0) 0 else (lulus * 100 / totalPeserta)
+    val persentase = if (totalPeserta == 0) 0 else (jumlahLulus * 100 / totalPeserta)
 
     var showStartPicker by remember { mutableStateOf(false) }
     var showEndPicker by remember { mutableStateOf(false) }
@@ -125,7 +126,7 @@ fun LaporanScreen(vm: AkademikViewModel) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     StatCard(
                         title = "Lulus",
-                        value = lulus.toString(),
+                        value = jumlahLulus.toString(),
                         icon = Icons.Default.CheckCircle,
                         modifier = Modifier.weight(1f)
                     )
@@ -176,6 +177,24 @@ fun LaporanScreen(vm: AkademikViewModel) {
                 }
             }
 
+            if (lulus.isNotEmpty()) {
+                item {
+                    Text(
+                        "Siswa Lulus",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                items(lulus.size) { i ->
+                    val l = lulus[i]
+                    Text("• ${l.namaSiswa} – ${l.namaMatpel}")
+                }
+
+                item {
+                    Spacer(Modifier.height(16.dp))
+                }
+            }
+
             if (gagal.isNotEmpty()) {
                 item {
                     Text(
@@ -193,7 +212,7 @@ fun LaporanScreen(vm: AkademikViewModel) {
             item {
                 Button(
                     onClick = {
-                        pdf.generateLaporan(rekap, lulus, gagal)
+                        pdf.generateLaporan(rekap, jumlahLulus, gagal)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {

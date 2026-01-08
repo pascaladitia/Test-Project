@@ -1,8 +1,12 @@
 package com.pascal.testproject.domain.usecase
 
-import com.pascal.testproject.data.entity.*
+import com.pascal.testproject.data.entity.MataPelajaranEntity
+import com.pascal.testproject.data.entity.PesertaEntity
+import com.pascal.testproject.data.entity.SiswaEntity
+import com.pascal.testproject.data.entity.UjianEntity
 import com.pascal.testproject.data.repository.AkademikRepository
 import com.pascal.testproject.domain.model.SiswaGagal
+import com.pascal.testproject.domain.model.SiswaLulus
 import com.pascal.testproject.domain.model.UjianRekap
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
@@ -19,6 +23,7 @@ class AkademikUseCaseImpl(
 
     override fun getRekapUjian(): Flow<List<UjianRekap>> = repository.getRekapUjian()
     override fun getJumlahLulus(): Flow<Int> = repository.getJumlahLulus()
+    override fun getSiswaLulus(): Flow<List<SiswaLulus>> = repository.getSiswaLulus()
     override fun getSiswaGagal(): Flow<List<SiswaGagal>> = repository.getSiswaGagal()
 
     override fun getUjianByTanggal(
