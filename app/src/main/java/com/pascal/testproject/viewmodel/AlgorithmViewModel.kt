@@ -21,18 +21,28 @@ class AlgorithmViewModel : ViewModel() {
         _output.value = "Hasil: ${input.reversed()}"
     }
 
+    private fun isPrime(n: Int): Boolean {
+        if (n < 2) return false
+        for (i in 2..kotlin.math.sqrt(n.toDouble()).toInt()) {
+            if (n % i == 0) return false
+        }
+        return true
+    }
+
     fun runPrime(input: String) {
-        val n = input.toIntOrNull()
-        if (n == null || n < 2) {
-            _output.value = "Error: Masukkan angka >= 2"
-            return
-        }
+        try {
+            val n = input.toInt()
+            if (n < 2) {
+                _output.value = "Error: Input harus >= 2"
+                return
+            }
 
-        val primes = (2 until n).filter { num ->
-            (2..kotlin.math.sqrt(num.toDouble()).toInt()).all { num  != 0 }
+            val primes = (2 until n).filter { isPrime(it) }
+            _output.value =
+                "Deret: ${primes.joinToString(", ")}\nJumlah: ${primes.sum()}"
+        } catch (e: Exception) {
+            _output.value = "Error: Input harus berupa angka"
         }
-
-        _output.value = "Deret: ${primes.joinToString(", ")}\nJumlah: ${primes.sum()}"
     }
 
     @SuppressLint("NewApi")
@@ -74,10 +84,12 @@ class AlgorithmViewModel : ViewModel() {
             .filter { it.value.size > 1 }
             .keys
 
+        val positif = duplicates.filter { it > 0 }
+
         _output.value =
-            if (duplicates.isEmpty())
+            if (positif.isEmpty())
                 "Tidak ada angka ganda"
             else
-                "Angka ganda: ${duplicates.joinToString(", ")}"
+                "Angka ganda: ${positif.joinToString(", ")}"
     }
 }
